@@ -1,11 +1,1 @@
-/* App-specific styles */
-
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1;
-}
+/* No additional styles needed - all in index.css */
