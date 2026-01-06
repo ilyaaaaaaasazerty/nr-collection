@@ -103,14 +103,12 @@ ol {
 /* Header */
 .header {
   background: var(--black);
-  padding: var(--space-md) 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 0;
+  position: static;
 }
 
 .header__logo {
-  height: 80px;
+  height: 250px;
   width: auto;
   margin: 0 auto;
   display: block;
