@@ -1,0 +1,217 @@
+.order-form {
+    padding: var(--space-4xl) 0;
+    background: var(--white);
+}
+
+.order-form__wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.order-form__form {
+    background: var(--cream);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-3xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.order-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+}
+
+.order-form__section {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-form__section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--gray-800);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-md);
+    border-bottom: 2px solid var(--gold-200);
+}
+
+.order-form__section-title svg {
+    color: var(--gold-600);
+}
+
+.order-form__size-section {
+    overflow: hidden;
+}
+
+.order-form__quantity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    background: var(--white);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm);
+    width: fit-content;
+}
+
+.order-form__qty-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    transition: all var(--transition-fast);
+}
+
+.order-form__qty-btn:hover {
+    background: var(--gold-500);
+    color: var(--white);
+}
+
+.order-form__qty-value {
+    min-width: 40px;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+/* Order Summary */
+.order-form__summary {
+    margin-top: var(--space-xl);
+    padding: var(--space-xl);
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--gold-200);
+}
+
+.order-form__summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-sm) 0;
+    font-size: 0.9375rem;
+    color: var(--gray-600);
+}
+
+.order-form__summary-row span:last-child {
+    font-weight: 500;
+    color: var(--gray-800);
+}
+
+.order-form__summary-row--total {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 2px solid var(--gray-100);
+    font-size: 1.25rem;
+}
+
+.order-form__summary-row--total span {
+    font-weight: 700;
+}
+
+.order-form__summary-row--total span:last-child {
+    color: var(--gold-600);
+    font-size: 1.5rem;
+}
+
+.order-form__cod-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--success-light);
+    border-radius: var(--radius-md);
+    color: var(--success);
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+
+/* Submit Button */
+.order-form__submit {
+    width: 100%;
+    margin-top: var(--space-2xl);
+    font-size: 1.125rem;
+    padding: var(--space-lg) var(--space-2xl);
+}
+
+.order-form__submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Success Message */
+.order-form__success {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+    background: var(--success-light);
+    border-radius: var(--radius-lg);
+    color: var(--success);
+}
+
+.order-form__success svg:first-child {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.order-form__success p {
+    flex: 1;
+    margin: 0;
+    color: #059669;
+}
+
+.order-form__success button {
+    padding: var(--space-sm);
+    color: var(--success);
+    border-radius: 50%;
+    transition: background var(--transition-fast);
+}
+
+.order-form__success button:hover {
+    background: rgba(16, 185, 129, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .order-form__grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+    }
+
+    .order-form__form {
+        padding: var(--space-xl);
+    }
+}
+
+@media (max-width: 640px) {
+    .order-form__form {
+        padding: var(--space-lg);
+        border-radius: var(--radius-xl);
+    }
+
+    .order-form__section-title {
+        font-size: 1.25rem;
+    }
+
+    .order-form__summary {
+        padding: var(--space-lg);
+    }
+
+    .order-form__submit {
+        font-size: 1rem;
+        padding: var(--space-md) var(--space-xl);
+    }
+}

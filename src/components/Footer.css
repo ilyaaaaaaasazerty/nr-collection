@@ -1,0 +1,194 @@
+.footer {
+    background: var(--gray-900);
+    color: var(--gray-300);
+    padding: var(--space-4xl) 0 var(--space-xl);
+}
+
+.footer__content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--gray-800);
+}
+
+/* Brand Section */
+.footer__brand {
+    max-width: 280px;
+}
+
+.footer__logo {
+    height: 60px;
+    width: auto;
+    margin-bottom: var(--space-lg);
+    filter: brightness(1.2);
+}
+
+.footer__description {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--gray-400);
+    margin-bottom: var(--space-lg);
+}
+
+.footer__social {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.footer__social-link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-800);
+    border-radius: 50%;
+    color: var(--gray-400);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+}
+
+.footer__social-link:hover {
+    background: var(--gold-500);
+    color: var(--white);
+}
+
+.footer__social-link--whatsapp:hover {
+    background: var(--whatsapp);
+}
+
+/* Links Sections */
+.footer__links h4,
+.footer__contact h4 {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: var(--space-lg);
+}
+
+.footer__links ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.footer__links li a,
+.footer__links li span {
+    font-size: 0.9375rem;
+    color: var(--gray-400);
+    transition: color var(--transition-fast);
+}
+
+.footer__links li a:hover {
+    color: var(--gold-400);
+}
+
+/* Contact Section */
+.footer__whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--whatsapp);
+    color: var(--white);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all var(--transition-fast);
+    margin-bottom: var(--space-lg);
+}
+
+.footer__whatsapp-btn:hover {
+    background: #20bd5a;
+    transform: translateY(-2px);
+}
+
+.footer__hours {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+}
+
+/* Bottom Bar */
+.footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-xl);
+}
+
+.footer__bottom p {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    margin: 0;
+}
+
+.footer__credit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.footer__heart {
+    color: #ef4444;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .footer__content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-2xl);
+    }
+
+    .footer__brand {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .footer__content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer__brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer__social {
+        justify-content: center;
+    }
+
+    .footer__links ul {
+        align-items: center;
+    }
+
+    .footer__contact {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer__bottom {
+        flex-direction: column;
+        gap: var(--space-md);
+        text-align: center;
+    }
+}
