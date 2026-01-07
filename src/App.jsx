@@ -1,37 +1,58 @@
-import { useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination } from 'swiper/modules'
-import { FaWhatsapp } from 'react-icons/fa'
-import { FiCheck } from 'react-icons/fi'
+import { useState, useEffect } from 'react'
+import { FaWhatsapp, FaStar, FaFacebookF, FaInstagram, FaShoppingCart } from 'react-icons/fa'
+import { FiMenu, FiPhone } from 'react-icons/fi'
 import 'swiper/css'
-import 'swiper/css/pagination'
 
 function App() {
-  const [selectedProduct, setSelectedProduct] = useState(null)
   const [selectedSize, setSelectedSize] = useState('')
-  const [quantity, setQuantity] = useState(1)
+  const [selectedColor, setSelectedColor] = useState('')
+  const [selectedQuantity, setSelectedQuantity] = useState(1)
+  const [currentImage, setCurrentImage] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     wilaya: '',
-    address: '',
+    commune: '',
   })
+  const [errors, setErrors] = useState({})
 
-  // 10 منتجات
+  // المنتجات - يمكنك تعديلها
   const products = [
-    { id: 1, name: 'فستان الأميرة', price: 3500, image: '👗', color: '#fce4ec', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 2, name: 'بدلة أنيقة', price: 5500, image: '🤵', color: '#e8eaf6', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 3, name: 'بيجامة قطنية', price: 2200, image: '🌙', color: '#e3f2fd', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 4, name: 'جاكيت شتوي', price: 4800, image: '🧥', color: '#fff3e0', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 5, name: 'فستان تول', price: 4200, image: '💃', color: '#fce4ec', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 6, name: 'طقم رياضي', price: 2800, image: '🏃', color: '#e8f5e9', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 7, name: 'قميص أنيق', price: 2500, image: '👔', color: '#e3f2fd', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 8, name: 'تنورة مكشكشة', price: 2000, image: '👯', color: '#fff8e1', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 9, name: 'سترة صوفية', price: 3200, image: '🧶', color: '#ffebee', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
-    { id: 10, name: 'طقم مواليد', price: 3800, image: '👶', color: '#f3e5f5', sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'] },
+    {
+      id: 1,
+      name: 'فستان الأميرة الفاخر',
+      subtitle: 'فستان أنيق للمناسبات الخاصة - قطن 100%',
+      price: 3500,
+      oldPrice: 4500,
+      discount: 22,
+      images: ['👗', '👗', '👗', '👗'],
+      sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'],
+      colors: [
+        { name: 'وردي', hex: '#fce4ec' },
+        { name: 'أبيض', hex: '#ffffff' },
+        { name: 'أزرق', hex: '#e3f2fd' },
+        { name: 'بيج', hex: '#fff8e1' },
+      ],
+      features: [
+        'قماش قطن 100% عالي الجودة',
+        'تصميم أنيق يناسب جميع المناسبات',
+        'سهل الغسل والكي',
+        'ألوان ثابتة لا تبهت مع الغسل',
+      ],
+    },
   ]
 
+  const product = products[0]
+
+  // خيارات الكمية والأسعار
+  const quantityOptions = [
+    { qty: 1, label: 'حبة واحدة', price: product.price },
+    { qty: 2, label: 'حبتين', price: product.price * 2 - 500 },
+    { qty: 3, label: 'ثلاث حبات', price: product.price * 3 - 1200 },
+  ]
+
+  // الولايات الجزائرية
   const wilayas = [
     'أدرار', 'الشلف', 'الأغواط', 'أم البواقي', 'باتنة', 'بجاية', 'بسكرة', 'بشار',
     'البليدة', 'البويرة', 'تمنراست', 'تبسة', 'تلمسان', 'تيارت', 'تيزي وزو', 'الجزائر',
@@ -43,42 +64,42 @@ function App() {
   ]
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('ar-DZ').format(price) + ' دج'
-  }
-
-  const handleSelectProduct = (product) => {
-    setSelectedProduct(product)
-    setSelectedSize(product.sizes[0])
-    setQuantity(1)
-    // Scroll to order form
-    document.getElementById('order-form').scrollIntoView({ behavior: 'smooth' })
+    return new Intl.NumberFormat('ar-DZ').format(price) + 'دج'
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }))
+    }
   }
 
-  const calculateTotal = () => {
-    if (!selectedProduct) return 0
-    return selectedProduct.price * quantity
+  const validateForm = () => {
+    const newErrors = {}
+    if (!formData.name.trim()) newErrors.name = 'مطلوب'
+    if (!formData.phone.trim()) newErrors.phone = 'مطلوب'
+    if (!formData.wilaya) newErrors.wilaya = 'اختر الولاية'
+    if (!selectedSize) newErrors.size = 'اختر المقاس'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const generateWhatsAppMessage = () => {
-    const total = calculateTotal()
+    const selectedQty = quantityOptions.find(q => q.qty === selectedQuantity)
     const message = `🛍️ *طلب جديد - NR Collection*
 
 👤 *الاسم:* ${formData.name}
 📱 *الهاتف:* ${formData.phone}
 📍 *الولاية:* ${formData.wilaya}
-🏠 *العنوان:* ${formData.address}
+🏠 *البلدية:* ${formData.commune || '-'}
 
-📦 *الطلب:*
-• المنتج: ${selectedProduct?.name}
+📦 *تفاصيل الطلب:*
+• المنتج: ${product.name}
 • المقاس: ${selectedSize}
-• الكمية: ${quantity}
-
-💰 *المجموع:* ${formatPrice(total)}
+• اللون: ${selectedColor || 'غير محدد'}
+• الكمية: ${selectedQty?.label}
+• السعر: ${formatPrice(selectedQty?.price || product.price)}
 
 💳 *الدفع عند الاستلام*`
 
@@ -86,243 +107,281 @@ function App() {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e?.preventDefault()
+    if (!validateForm()) return
+
     const phoneNumber = '213561761020'
     const message = generateWhatsAppMessage()
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank')
     setShowSuccess(true)
   }
 
-  const isFormValid = selectedProduct && selectedSize && formData.name && formData.phone && formData.wilaya && formData.address
+  const scrollToForm = () => {
+    document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div className="app">
+      {/* Announcement Bar */}
+      <div className="announcement-bar">
+        <span>🚀 عروض حصرية! الدفع عند الاستلام - اطلب الآن!</span>
+      </div>
+
       {/* Header */}
       <header className="header">
-        <div className="container">
-          <img src="/logo.png" alt="NR Collection" className="header__logo" />
-        </div>
+        <FaShoppingCart className="header__cart" size={20} />
+        <img src="/logo.png" alt="NR Collection" className="header__logo" />
+        <FiMenu size={24} className="header__menu" />
       </header>
 
       <main>
-        {/* Products Section */}
-        <section className="section">
-          <div className="container">
-            <h2 className="section-title"> 👇 Nouvelle collection d'hiver </h2>
+        {/* Product Section */}
+        <section className="product-section">
+          <div className="product-header">
+            <span className="product-badge">منتوج حصري ⭐</span>
+            <h1 className="product-title">{product.name}</h1>
+            <p className="product-subtitle">{product.subtitle}</p>
 
-            <Swiper
-              modules={[Pagination]}
-              spaceBetween={16}
-              slidesPerView={1.15}
-              centeredSlides={true}
-              pagination={{ clickable: true }}
-            >
-              {products.map((product) => (
-                <SwiperSlide key={product.id}>
-                  <div
-                    className={`product-card ${selectedProduct?.id === product.id ? 'selected' : ''}`}
-                    onClick={() => handleSelectProduct(product)}
-                  >
-                    <div
-                      className="product-card__image"
-                      style={{ backgroundColor: product.color }}
-                    >
-                      {product.image}
-                    </div>
-                    <div className="product-card__content">
-                      <h3 className="product-card__name">{product.name}</h3>
-                      <p className="product-card__price">{formatPrice(product.price)}</p>
-                      <div className="product-card__sizes">
-                        {product.sizes.map((size, i) => (
-                          <span key={i} className="product-card__size">{size}</span>
-                        ))}
-                      </div>
-                      <button className="product-card__select-btn">
-                        {selectedProduct?.id === product.id ? '✓ تم الاختيار' : 'اختيار'}
-                      </button>
-                    </div>
-                  </div>
-                </SwiperSlide>
+            <div className="price-container">
+              <span className="price-current">{formatPrice(product.price)}</span>
+              <span className="price-old">{formatPrice(product.oldPrice)}</span>
+              <span className="discount-badge">-{product.discount}%</span>
+            </div>
+
+            <div className="star-rating">
+              {[...Array(5)].map((_, i) => (
+                <FaStar key={i} />
               ))}
-            </Swiper>
+            </div>
+          </div>
+
+          {/* Image Gallery */}
+          <div className="image-gallery">
+            <div
+              className="image-main"
+              style={{
+                backgroundColor: product.colors[currentImage]?.hex || '#fce4ec',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '8rem'
+              }}
+            >
+              {product.images[currentImage]}
+            </div>
+            <div className="image-thumbnails">
+              {product.images.map((img, i) => (
+                <div
+                  key={i}
+                  className={`image-thumbnail ${currentImage === i ? 'active' : ''}`}
+                  style={{
+                    backgroundColor: product.colors[i]?.hex || '#f5f5f5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.5rem'
+                  }}
+                  onClick={() => setCurrentImage(i)}
+                >
+                  {img}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* Order Form Section */}
-        <section id="order-form" className="section" style={{ paddingTop: 0 }}>
-          <div className="container">
-            <h2 className="section-title">أكمل طلبك 📝</h2>
+        <section id="order-form" className="order-section">
+          <h2 className="order-section__title">📝 أكمل طلبك</h2>
 
-            <form className="order-form" onSubmit={handleSubmit}>
-              {/* Selected Product Display */}
-              {selectedProduct ? (
-                <div className="order-form__selected">
-                  <p className="order-form__selected-title">المنتج المختار:</p>
-                  <p className="order-form__selected-name">{selectedProduct.image} {selectedProduct.name}</p>
-                  <p className="order-form__selected-price">{formatPrice(selectedProduct.price)}</p>
-                </div>
-              ) : (
-                <div className="order-form__selected" style={{ background: '#737373' }}>
-                  <p>☝️ اختر منتج من الأعلى</p>
-                </div>
-              )}
+          {/* Customer Info Form */}
+          <div className="form-grid">
+            <div className="form-group">
+              <label>الاسم الكامل</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="أدخل اسمك"
+              />
+              {errors.name && <span className="form-error">{errors.name}</span>}
+            </div>
+            <div className="form-group">
+              <label>رقم الهاتف 📱</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="07XXXXXXXX"
+                style={{ direction: 'ltr', textAlign: 'left' }}
+              />
+              {errors.phone && <span className="form-error">{errors.phone}</span>}
+            </div>
+            <div className="form-group">
+              <label>الولاية</label>
+              <select name="wilaya" value={formData.wilaya} onChange={handleChange}>
+                <option value="">اختر الولاية</option>
+                {wilayas.map((w, i) => (
+                  <option key={i} value={w}>{w}</option>
+                ))}
+              </select>
+              {errors.wilaya && <span className="form-error">{errors.wilaya}</span>}
+            </div>
+            <div className="form-group">
+              <label>البلدية</label>
+              <input
+                type="text"
+                name="commune"
+                value={formData.commune}
+                onChange={handleChange}
+                placeholder="البلدية"
+              />
+            </div>
+          </div>
 
-              {/* Size Selection */}
-              {selectedProduct && (
-                <div className="form-group">
-                  <label>المقاس</label>
-                  <select
-                    value={selectedSize}
-                    onChange={(e) => setSelectedSize(e.target.value)}
-                    required
-                  >
-                    {selectedProduct.sizes.map((size, i) => (
-                      <option key={i} value={size}>{size}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Quantity */}
-              {selectedProduct && (
-                <div className="form-group">
-                  <label>الكمية</label>
-                  <div className="quantity-control">
-                    <button
-                      type="button"
-                      className="quantity-btn"
-                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="quantity-value">{quantity}</span>
-                    <button
-                      type="button"
-                      className="quantity-btn"
-                      onClick={() => setQuantity(q => q + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Customer Info */}
-              <div className="form-group">
-                <label>الاسم الكامل *</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="أدخل اسمك"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>رقم الهاتف *</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="07XXXXXXXX"
-                  required
-                  style={{ direction: 'ltr', textAlign: 'left' }}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>الولاية *</label>
-                <select
-                  name="wilaya"
-                  value={formData.wilaya}
-                  onChange={handleChange}
-                  required
+          {/* Quantity/Price Options */}
+          <div className="delivery-section">
+            <h3 className="delivery-title">📦 سعر التوصيل</h3>
+            <div className="quantity-options">
+              {quantityOptions.map((opt) => (
+                <div
+                  key={opt.qty}
+                  className={`quantity-option ${selectedQuantity === opt.qty ? 'selected' : ''}`}
+                  onClick={() => setSelectedQuantity(opt.qty)}
                 >
-                  <option value="">اختر الولاية</option>
-                  {wilayas.map((wilaya, i) => (
-                    <option key={i} value={wilaya}>{wilaya}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>العنوان بالتفصيل *</label>
-                <textarea
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="البلدية، الحي، الشارع..."
-                  rows="3"
-                  required
-                />
-              </div>
-
-              {/* Total */}
-              {selectedProduct && (
-                <div className="order-total">
-                  <span className="order-total__label">المجموع:</span>
-                  <span className="order-total__value">{formatPrice(calculateTotal())}</span>
+                  <div className="quantity-option__radio" />
+                  <div className="quantity-option__info">
+                    <span className="quantity-option__label">{opt.label}</span>
+                  </div>
+                  <span className="quantity-option__price">{formatPrice(opt.price)}</span>
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
 
-              {/* COD Badge */}
-              <div className="cod-badge">
-                <FiCheck size={20} />
-                الدفع عند الاستلام
-              </div>
+          {/* Size Selector */}
+          <div className="size-section">
+            <h3 className="size-title">اختر المقاس</h3>
+            <div className="size-options">
+              {product.sizes.map((size) => (
+                <button
+                  key={size}
+                  className={`size-option ${selectedSize === size ? 'selected' : ''}`}
+                  onClick={() => setSelectedSize(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+            {errors.size && <span className="form-error" style={{ marginTop: '8px' }}>{errors.size}</span>}
+          </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className="submit-btn"
-                disabled={!isFormValid}
-              >
-                <FaWhatsapp size={28} />
-                تأكيد الطلب عبر واتساب
-              </button>
-            </form>
+          {/* Color Selector */}
+          <div className="color-section">
+            <h3 className="color-title">اختر اللون</h3>
+            <div className="color-options">
+              {product.colors.map((color) => (
+                <div
+                  key={color.name}
+                  className={`color-option ${selectedColor === color.name ? 'selected' : ''}`}
+                  onClick={() => setSelectedColor(color.name)}
+                >
+                  <div
+                    className="color-option__swatch"
+                    style={{ backgroundColor: color.hex, border: color.hex === '#ffffff' ? '2px solid #e5e7eb' : 'none' }}
+                  />
+                  <span className="color-option__label">{color.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Order Button */}
+          <button className="order-btn" onClick={handleSubmit}>
+            اشتري الآن 🛒
+          </button>
+
+          {/* Order Summary Link */}
+          <div className="order-summary-link">
+            🛍️ ملخص الطلبية
           </div>
         </section>
+
+        {/* Product Description */}
+        <section className="description-section">
+          <h2 className="description-title">📖 وصف المنتج</h2>
+          <p className="description-text">
+            اكتشف {product.name} واستمتع براحة و أناقة لا مثيل لها.
+            مصنوع من أجود أنواع الأقمشة لضمان راحة طفلك طوال اليوم.
+          </p>
+
+          <div className="description-features">
+            {product.features.map((feature, i) => (
+              <div key={i} className="description-feature">
+                {feature}
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="description-image"
+            style={{
+              backgroundColor: '#fce4ec',
+              aspectRatio: '1',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '6rem',
+              borderRadius: '16px'
+            }}
+          >
+            👗
+          </div>
+
+          <h3 className="description-title" style={{ marginTop: '24px' }}>🚚 طريقة التوصيل و الدفع</h3>
+          <p className="description-text">
+            بعد ملأ جميع المعلومات الخاصة سيقوم فريقنا بالإتصال بك لتأكيد
+            الطلبية و بعد ذالك يتم إرسالها إلى عنوانكم المحدد خلال مدة 24 إلى
+            48 ساعة. الدفع يكون عند الاستلام.
+          </p>
+        </section>
+
+        {/* Footer */}
+        <footer className="footer">
+          <img src="/logo.png" alt="NR Collection" className="footer__logo" />
+          <p className="footer__text">حقوق محفوظة لـ NR Collection</p>
+          <div className="footer__social">
+            <a href="#"><FaFacebookF /></a>
+            <a href="#"><FaInstagram /></a>
+            <a href="https://wa.me/213561761020"><FaWhatsapp /></a>
+          </div>
+        </footer>
       </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p className="footer__text">NR Collection © 2026</p>
-          <p className="footer__phone">+213 561 761 020</p>
-        </div>
-      </footer>
+      {/* Fixed Bottom Bar */}
+      <div className="fixed-bottom-bar">
+        <a href="https://wa.me/213561761020" className="whatsapp-btn">
+          <FaWhatsapp />
+        </a>
+        <button className="fixed-order-btn" onClick={scrollToForm}>
+          اشتري الآن
+        </button>
+      </div>
 
-      {/* WhatsApp Float */}
-      <a
-        href="https://wa.me/213561761020"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="whatsapp-float"
-      >
-        <FaWhatsapp />
-      </a>
-
-      {/* Success Message */}
+      {/* Success Modal */}
       {showSuccess && (
-        <>
-          <div className="success-overlay" onClick={() => setShowSuccess(false)} />
-          <div className="success-message">
-            <div className="success-message__icon">✅</div>
-            <h3 className="success-message__title">تم إرسال طلبك!</h3>
-            <p className="success-message__text">سنتواصل معك قريباً للتأكيد</p>
-            <button
-              className="submit-btn"
-              onClick={() => setShowSuccess(false)}
-              style={{ background: '#22c55e' }}
-            >
+        <div className="modal-overlay" onClick={() => setShowSuccess(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-icon">✅</div>
+            <h3 className="modal-title">تم إرسال طلبك!</h3>
+            <p className="modal-text">سنتواصل معك قريباً للتأكيد</p>
+            <button className="modal-btn" onClick={() => setShowSuccess(false)}>
               حسناً
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   )
