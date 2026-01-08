@@ -284,8 +284,9 @@ textarea {
 
 .image-main {
   width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
+  aspect-ratio: 3/4;
+  object-fit: contain;
+  background: #f5f5f5;
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-sm);
 }
@@ -304,9 +305,10 @@ textarea {
 
 .image-thumbnail {
   width: 60px;
-  height: 60px;
+  height: 80px;
   border-radius: var(--radius-md);
-  object-fit: cover;
+  object-fit: contain;
+  background: #f5f5f5;
   border: 2px solid transparent;
   cursor: pointer;
   flex-shrink: 0;
