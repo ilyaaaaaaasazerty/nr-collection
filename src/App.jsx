@@ -21,21 +21,30 @@ function App() {
   const products = [
     {
       id: 1,
-      name: 'فستان الأميرة الفاخر',
-      subtitle: 'فستان أنيق للمناسبات الخاصة - قطن 100%',
+      name: 'طقم أطفال فاخر',
+      subtitle: 'ملابس أطفال أنيقة للمناسبات الخاصة - جودة عالية',
       price: 3500,
       oldPrice: 4500,
       discount: 22,
-      images: ['👗', '👗', '👗', '👗'],
+      images: [
+        '/products/product1.png',
+        '/products/product2.png',
+        '/products/product3.png',
+        '/products/product4.png',
+        '/products/product5.png',
+        '/products/product6.png',
+        '/products/product7.png',
+        '/products/product8.png',
+      ],
       sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'],
       colors: [
-        { name: 'وردي', hex: '#fce4ec' },
+        { name: 'أسود', hex: '#1a1a1a' },
         { name: 'أبيض', hex: '#ffffff' },
-        { name: 'أزرق', hex: '#e3f2fd' },
-        { name: 'بيج', hex: '#fff8e1' },
+        { name: 'رمادي', hex: '#808080' },
+        { name: 'بيج', hex: '#f5f5dc' },
       ],
       features: [
-        'قماش قطن 100% عالي الجودة',
+        'قماش عالي الجودة مريح للأطفال',
         'تصميم أنيق يناسب جميع المناسبات',
         'سهل الغسل والكي',
         'ألوان ثابتة لا تبهت مع الغسل',
@@ -157,34 +166,20 @@ function App() {
 
           {/* Image Gallery */}
           <div className="image-gallery">
-            <div
+            <img
+              src={product.images[currentImage]}
+              alt={product.name}
               className="image-main"
-              style={{
-                backgroundColor: product.colors[currentImage]?.hex || '#fce4ec',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '8rem'
-              }}
-            >
-              {product.images[currentImage]}
-            </div>
+            />
             <div className="image-thumbnails">
               {product.images.map((img, i) => (
-                <div
+                <img
                   key={i}
+                  src={img}
+                  alt={`${product.name} ${i + 1}`}
                   className={`image-thumbnail ${currentImage === i ? 'active' : ''}`}
-                  style={{
-                    backgroundColor: product.colors[i]?.hex || '#f5f5f5',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem'
-                  }}
                   onClick={() => setCurrentImage(i)}
-                >
-                  {img}
-                </div>
+                />
               ))}
             </div>
           </div>
@@ -325,20 +320,11 @@ function App() {
             ))}
           </div>
 
-          <div
+          <img
+            src="/products/product8.png"
+            alt="طقم أطفال"
             className="description-image"
-            style={{
-              backgroundColor: '#fce4ec',
-              aspectRatio: '1',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '6rem',
-              borderRadius: '16px'
-            }}
-          >
-            👗
-          </div>
+          />
 
           <h3 className="description-title" style={{ marginTop: '24px' }}>🚚 طريقة التوصيل و الدفع</h3>
           <p className="description-text">
