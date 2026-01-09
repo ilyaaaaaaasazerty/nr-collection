@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react'
-import { FaWhatsapp, FaStar, FaFacebookF, FaInstagram, FaShoppingCart } from 'react-icons/fa'
-import { FiMenu, FiPhone } from 'react-icons/fi'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { FaStar, FaFacebookF, FaInstagram, FaShoppingCart } from 'react-icons/fa'
+import { FiMenu } from 'react-icons/fi'
 import 'swiper/css'
 
-function App() {
+// Import dataService and Admin page
+import { dataService } from './services/dataService'
+import Admin from './pages/Admin'
+
+function Storefront() {
   const [selectedSize, setSelectedSize] = useState('')
   const [selectedColor, setSelectedColor] = useState('')
   const [selectedQuantity, setSelectedQuantity] = useState(1)
@@ -19,11 +24,11 @@ function App() {
   })
   const [errors, setErrors] = useState({})
 
-  // المنتجات - يمكنك تعديلها
+  // المنتجات
   const products = [
     {
       id: 1,
-      name: 'طقم أطفال فاخر',
+      name: 'طقم أطفال فاخر بالعيد',
       subtitle: 'ملابس أطفال أنيقة - جودة عالية',
       price: 5900,
       oldPrice: 6900,
@@ -36,7 +41,6 @@ function App() {
         '/products/product5.png',
         '/products/product6.png',
         '/products/product7.png',
-        '/products/product8.png',
       ],
       sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'],
       colors: [
@@ -59,14 +63,12 @@ function App() {
 
   const product = products[0]
 
-  // خيارات الكمية والأسعار
   const quantityOptions = [
     { qty: 1, label: 'قطعة واحدة', price: product.price },
     { qty: 2, label: 'قطعتين', price: product.price * 2 - 500 },
     { qty: 3, label: 'ثلاث قطع', price: product.price * 3 - 1200 },
   ]
 
-  // الولايات الجزائرية (69 ولاية)
   const wilayas = [
     '01. أدرار', '02. الشلف', '03. الأغواط', '04. أم البواقي', '05. باتنة', '06. بجاية', '07. بسكرة', '08. بشار',
     '09. البليدة', '10. البويرة', '11. تمنراست', '12. تبسة', '13. تلمسان', '14. تيارت', '15. تيزي وزو', '16. الجزائر',
@@ -102,35 +104,32 @@ function App() {
     return Object.keys(newErrors).length === 0
   }
 
-  const generateWhatsAppMessage = () => {
-    const selectedQty = quantityOptions.find(q => q.qty === selectedQuantity)
-    const message = `🛍️ *طلب جديد - NR Collection*
-
-👤 *الاسم:* ${formData.name}
-📱 *الهاتف:* ${formData.phone}
-📍 *الولاية:* ${formData.wilaya}
-🏠 *البلدية:* ${formData.commune || '-'}
-
-📦 *تفاصيل الطلب:*
-• المنتج: ${product.name}
-• المقاس: ${selectedSize}
-• اللون: ${selectedColor || 'غير محدد'}
-• الكمية: ${selectedQty?.label}
-• السعر: ${formatPrice(selectedQty?.price || product.price)}
-
-💳 *الدفع عند الاستلام*`
-
-    return encodeURIComponent(message)
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e?.preventDefault()
     if (!validateForm()) return
 
-    const phoneNumber = '213656081893'
-    const message = generateWhatsAppMessage()
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank')
-    setShowSuccess(true)
+    const selectedQty = quantityOptions.find(q => q.qty === selectedQuantity)
+
+    const orderData = {
+      name: formData.name,
+      phone: formData.phone,
+      wilaya: formData.wilaya,
+      commune: formData.commune,
+      productName: product.name,
+      size: selectedSize,
+      color: selectedColor || 'غير محدد',
+      quantity: selectedQty?.label,
+      totalPrice: formatPrice(selectedQty?.price || product.price)
+    }
+
+    const result = await dataService.saveOrder(orderData)
+    if (result.success) {
+      setShowSuccess(true)
+      // Reset form
+      setFormData({ name: '', phone: '', wilaya: '', commune: '' })
+      setSelectedSize('')
+      setSelectedColor('')
+    }
   }
 
   const scrollToForm = () => {
@@ -197,6 +196,67 @@ function App() {
         <section id="order-form" className="order-section">
           <h2 className="order-section__title">📝 أكمل طلبك</h2>
 
+          {/* Color Selector */}
+          <div className="color-section">
+            <h3 className="color-title">اختر اللون</h3>
+            <div className="color-options">
+              {product.colors.map((color, i) => (
+                <div
+                  key={color.name}
+                  className={`color-option ${selectedColor === color.name ? 'selected' : ''}`}
+                  onClick={() => {
+                    setSelectedColor(color.name)
+                    setColorPreview(product.images[i])
+                    setCurrentImage(i)
+                  }}
+                >
+                  <div
+                    className="color-option__swatch"
+                    style={{ backgroundColor: color.hex, border: color.hex === '#ffffff' ? '2px solid #e5e7eb' : 'none' }}
+                  />
+                  <span className="color-option__label">{color.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Size Selector */}
+          <div className="size-section">
+            <h3 className="size-title">اختر المقاس</h3>
+            <div className="size-options">
+              {product.sizes.map((size) => (
+                <button
+                  key={size}
+                  className={`size-option ${selectedSize === size ? 'selected' : ''}`}
+                  onClick={() => setSelectedSize(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+            {errors.size && <span className="form-error" style={{ marginTop: '8px' }}>{errors.size}</span>}
+          </div>
+
+          {/* Quantity/Price Options */}
+          <div className="delivery-section">
+            <h3 className="delivery-title">السعر</h3>
+            <div className="quantity-options">
+              {quantityOptions.map((opt) => (
+                <div
+                  key={opt.qty}
+                  className={`quantity-option ${selectedQuantity === opt.qty ? 'selected' : ''}`}
+                  onClick={() => setSelectedQuantity(opt.qty)}
+                >
+                  <div className="quantity-option__radio" />
+                  <div className="quantity-option__info">
+                    <span className="quantity-option__label">{opt.label}</span>
+                  </div>
+                  <span className="quantity-option__price">{formatPrice(opt.price)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Customer Info Form */}
           <div className="form-grid">
             <div className="form-group">
@@ -244,67 +304,6 @@ function App() {
             </div>
           </div>
 
-          {/* Quantity/Price Options */}
-          <div className="delivery-section">
-            <h3 className="delivery-title">📦 سعر التوصيل</h3>
-            <div className="quantity-options">
-              {quantityOptions.map((opt) => (
-                <div
-                  key={opt.qty}
-                  className={`quantity-option ${selectedQuantity === opt.qty ? 'selected' : ''}`}
-                  onClick={() => setSelectedQuantity(opt.qty)}
-                >
-                  <div className="quantity-option__radio" />
-                  <div className="quantity-option__info">
-                    <span className="quantity-option__label">{opt.label}</span>
-                  </div>
-                  <span className="quantity-option__price">{formatPrice(opt.price)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Size Selector */}
-          <div className="size-section">
-            <h3 className="size-title">اختر المقاس</h3>
-            <div className="size-options">
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  className={`size-option ${selectedSize === size ? 'selected' : ''}`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-            {errors.size && <span className="form-error" style={{ marginTop: '8px' }}>{errors.size}</span>}
-          </div>
-
-          {/* Color Selector */}
-          <div className="color-section">
-            <h3 className="color-title">اختر اللون</h3>
-            <div className="color-options">
-              {product.colors.map((color, i) => (
-                <div
-                  key={color.name}
-                  className={`color-option ${selectedColor === color.name ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedColor(color.name)
-                    setColorPreview(product.images[i])
-                    setCurrentImage(i)
-                  }}
-                >
-                  <div
-                    className="color-option__swatch"
-                    style={{ backgroundColor: color.hex, border: color.hex === '#ffffff' ? '2px solid #e5e7eb' : 'none' }}
-                  />
-                  <span className="color-option__label">{color.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Order Button */}
           <button className="order-btn" onClick={handleSubmit}>
             اشتري الآن 🛒
@@ -332,12 +331,6 @@ function App() {
             ))}
           </div>
 
-          <img
-            src="/products/product8.png"
-            alt="طقم أطفال"
-            className="description-image"
-          />
-
           <h3 className="description-title" style={{ marginTop: '24px' }}>🚚 طريقة التوصيل و الدفع</h3>
           <p className="description-text">
             بعد ملأ جميع المعلومات الخاصة سيقوم فريقنا بالإتصال بك لتأكيد
@@ -353,17 +346,13 @@ function App() {
           <div className="footer__social">
             <a href="#"><FaFacebookF /></a>
             <a href="#"><FaInstagram /></a>
-            <a href="https://wa.me/213561761020"><FaWhatsapp /></a>
           </div>
         </footer>
       </main>
 
       {/* Fixed Bottom Bar */}
-      <div className="fixed-bottom-bar">
-        <a href="https://wa.me/213561761020" className="whatsapp-btn">
-          <FaWhatsapp />
-        </a>
-        <button className="fixed-order-btn" onClick={scrollToForm}>
+      <div className="fixed-bottom-bar" style={{ justifyContent: 'center' }}>
+        <button className="fixed-order-btn" onClick={scrollToForm} style={{ maxWidth: '400px' }}>
           اشتري الآن
         </button>
       </div>
@@ -424,7 +413,7 @@ function App() {
               setShowSummary(false)
               handleSubmit()
             }}>
-              تأكيد وطلب عبر واتساب
+              تأكيد الطلب الآن
             </button>
           </div>
         </div>
@@ -435,8 +424,8 @@ function App() {
         <div className="modal-overlay" onClick={() => setShowSuccess(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-icon">✅</div>
-            <h3 className="modal-title">تم إرسال طلبك!</h3>
-            <p className="modal-text">سنتواصل معك قريباً للتأكيد</p>
+            <h3 className="modal-title">تم استلام طلبك!</h3>
+            <p className="modal-text">سنتصل بك قريباً عبر الهاتف لتأكيد التفاصيل</p>
             <button className="modal-btn" onClick={() => setShowSuccess(false)}>
               حسناً
             </button>
@@ -444,6 +433,17 @@ function App() {
         </div>
       )}
     </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Storefront />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </Router>
   )
 }
 
