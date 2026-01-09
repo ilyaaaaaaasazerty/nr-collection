@@ -10,6 +10,7 @@ function App() {
   const [currentImage, setCurrentImage] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
   const [colorPreview, setColorPreview] = useState(null)
+  const [showSummary, setShowSummary] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -65,15 +66,18 @@ function App() {
     { qty: 3, label: 'ثلاث قطع', price: product.price * 3 - 1200 },
   ]
 
-  // الولايات الجزائرية
+  // الولايات الجزائرية (69 ولاية)
   const wilayas = [
-    'أدرار', 'الشلف', 'الأغواط', 'أم البواقي', 'باتنة', 'بجاية', 'بسكرة', 'بشار',
-    'البليدة', 'البويرة', 'تمنراست', 'تبسة', 'تلمسان', 'تيارت', 'تيزي وزو', 'الجزائر',
-    'الجلفة', 'جيجل', 'سطيف', 'سعيدة', 'سكيكدة', 'سيدي بلعباس', 'عنابة', 'قالمة',
-    'قسنطينة', 'المدية', 'مستغانم', 'المسيلة', 'معسكر', 'ورقلة', 'وهران', 'البيض',
-    'إليزي', 'برج بوعريريج', 'بومرداس', 'الطارف', 'تندوف', 'تيسمسيلت', 'الوادي',
-    'خنشلة', 'سوق أهراس', 'تيبازة', 'ميلة', 'عين الدفلى', 'النعامة', 'عين تموشنت',
-    'غرداية', 'غليزان'
+    '01. أدرار', '02. الشلف', '03. الأغواط', '04. أم البواقي', '05. باتنة', '06. بجاية', '07. بسكرة', '08. بشار',
+    '09. البليدة', '10. البويرة', '11. تمنراست', '12. تبسة', '13. تلمسان', '14. تيارت', '15. تيزي وزو', '16. الجزائر',
+    '17. الجلفة', '18. جيجل', '19. سطيف', '20. سعيدة', '21. سكيكدة', '22. سيدي بلعباس', '23. عنابة', '24. قالمة',
+    '25. قسنطينة', '26. المدية', '27. مستغانم', '28. المسيلة', '29. معسكر', '30. ورقلة', '31. وهران', '32. البيض',
+    '33. إليزي', '34. برج بوعريريج', '35. بومرداس', '36. الطارف', '37. تندوف', '38. تيسمسيلت', '39. الوادي',
+    '40. خنشلة', '41. سوق أهراس', '42. تيبازة', '43. ميلة', '44. عين الدفلى', '45. النعامة', '46. عين تموشنت',
+    '47. غرداية', '48. غليزان', '49. تميمون', '50. برج باجي مختار', '51. أولاد جلال', '52. بني عباس',
+    '53. عين صالح', '54. عين قزام', '55. تقرت', '56. جانت', '57. المغير', '58. المنيعة',
+    '59. أفلو', '60. بريكة', '61. القنطرة', '62. بئر العاتر', '63. العريشة', '64. قصر الشلالة',
+    '65. عين وسارة', '66. مسعد', '67. قصر البخاري', '68. بوسعادة', '69. الأبيض سيدي الشيخ'
   ]
 
   const formatPrice = (price) => {
@@ -281,7 +285,7 @@ function App() {
           <div className="color-section">
             <h3 className="color-title">اختر اللون</h3>
             <div className="color-options">
-              {product.colors.map((color) => (
+              {product.colors.map((color, i) => (
                 <div
                   key={color.name}
                   className={`color-option ${selectedColor === color.name ? 'selected' : ''}`}
@@ -307,7 +311,7 @@ function App() {
           </button>
 
           {/* Order Summary Link */}
-          <div className="order-summary-link">
+          <div className="order-summary-link" onClick={() => setShowSummary(true)}>
             🛍️ ملخص الطلبية
           </div>
         </section>
@@ -375,6 +379,52 @@ function App() {
             <img src={colorPreview} alt="Color Preview" className="preview-modal__image" />
             <button className="preview-modal__btn" onClick={() => setColorPreview(null)}>
               تأكيد الاختيار
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Order Summary Modal */}
+      {showSummary && (
+        <div className="modal-overlay" onClick={() => setShowSummary(false)}>
+          <div className="summary-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="summary-modal__header">
+              <h3 className="summary-modal__title">📋 ملخص طلبك</h3>
+              <button className="summary-modal__close" onClick={() => setShowSummary(false)}>×</button>
+            </div>
+
+            <div className="summary-modal__content">
+              <div className="summary-item">
+                <span className="summary-item__label">المنتج:</span>
+                <span className="summary-item__value">{product.name}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-item__label">المقاس:</span>
+                <span className="summary-item__value">{selectedSize || 'لم يتم الاختيار'}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-item__label">اللون:</span>
+                <span className="summary-item__value">{selectedColor || 'لم يتم الاختيار'}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-item__label">الكمية:</span>
+                <span className="summary-item__value">
+                  {quantityOptions.find(q => q.qty === selectedQuantity)?.label}
+                </span>
+              </div>
+              <div className="summary-total">
+                <span className="summary-total__label">الإجمالي:</span>
+                <span className="summary-total__value">
+                  {formatPrice(quantityOptions.find(q => q.qty === selectedQuantity)?.price)}
+                </span>
+              </div>
+            </div>
+
+            <button className="summary-modal__btn" onClick={() => {
+              setShowSummary(false)
+              handleSubmit()
+            }}>
+              تأكيد وطلب عبر واتساب
             </button>
           </div>
         </div>
