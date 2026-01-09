@@ -22,9 +22,9 @@ function App() {
     {
       id: 1,
       name: 'طقم أطفال فاخر',
-      subtitle: 'ملابس أطفال أنيقة للمناسبات الخاصة - جودة عالية',
-      price: 3500,
-      oldPrice: 4500,
+      subtitle: 'ملابس أطفال أنيقة - جودة عالية',
+      price: 5900,
+      oldPrice: 6900,
       discount: 22,
       images: [
         '/products/product1.png',
@@ -39,9 +39,12 @@ function App() {
       sizes: ['4 سنوات', '6 سنوات', '8 سنوات', '10 سنوات', '12 سنة'],
       colors: [
         { name: 'أسود', hex: '#1a1a1a' },
-        { name: 'أبيض', hex: '#ffffff' },
-        { name: 'رمادي', hex: '#808080' },
-        { name: 'بيج', hex: '#f5f5dc' },
+        { name: 'بني داكن', hex: '#5f3f29' },
+        { name: 'كاكي', hex: '#876746' },
+        { name: 'بيج', hex: '#d2ba9f' },
+        { name: 'رمادي', hex: '#676669' },
+        { name: 'بني فاتح', hex: '#886946' },
+        { name: 'زيتي', hex: '#313323' },
       ],
       features: [
         'قماش عالي الجودة مريح للأطفال',
@@ -56,9 +59,9 @@ function App() {
 
   // خيارات الكمية والأسعار
   const quantityOptions = [
-    { qty: 1, label: 'حبة واحدة', price: product.price },
-    { qty: 2, label: 'حبتين', price: product.price * 2 - 500 },
-    { qty: 3, label: 'ثلاث حبات', price: product.price * 3 - 1200 },
+    { qty: 1, label: 'قطعة واحدة', price: product.price },
+    { qty: 2, label: 'قطعتين', price: product.price * 2 - 500 },
+    { qty: 3, label: 'ثلاث قطع', price: product.price * 3 - 1200 },
   ]
 
   // الولايات الجزائرية
@@ -119,7 +122,7 @@ function App() {
     e?.preventDefault()
     if (!validateForm()) return
 
-    const phoneNumber = '213561761020'
+    const phoneNumber = '213656081893'
     const message = generateWhatsAppMessage()
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank')
     setShowSuccess(true)
