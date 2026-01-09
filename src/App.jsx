@@ -9,6 +9,7 @@ function App() {
   const [selectedQuantity, setSelectedQuantity] = useState(1)
   const [currentImage, setCurrentImage] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [colorPreview, setColorPreview] = useState(null)
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -284,7 +285,11 @@ function App() {
                 <div
                   key={color.name}
                   className={`color-option ${selectedColor === color.name ? 'selected' : ''}`}
-                  onClick={() => setSelectedColor(color.name)}
+                  onClick={() => {
+                    setSelectedColor(color.name)
+                    setColorPreview(product.images[i])
+                    setCurrentImage(i)
+                  }}
                 >
                   <div
                     className="color-option__swatch"
@@ -358,6 +363,22 @@ function App() {
           اشتري الآن
         </button>
       </div>
+
+      {/* Color Preview Modal */}
+      {colorPreview && (
+        <div className="modal-overlay" onClick={() => setColorPreview(null)}>
+          <div className="preview-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="preview-modal__close" onClick={() => setColorPreview(null)}>×</button>
+            <div className="preview-modal__header">
+              <span className="preview-modal__title">اللون المختار: {selectedColor}</span>
+            </div>
+            <img src={colorPreview} alt="Color Preview" className="preview-modal__image" />
+            <button className="preview-modal__btn" onClick={() => setColorPreview(null)}>
+              تأكيد الاختيار
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Success Modal */}
       {showSuccess && (
