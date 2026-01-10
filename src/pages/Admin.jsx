@@ -7,6 +7,7 @@ export default function Admin() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     // Simple password protection
     const handleLogin = (e) => {

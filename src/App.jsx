@@ -28,11 +28,9 @@ function Storefront() {
   const products = [
     {
       id: 1,
-      name: 'طقم أطفال فاخر بالعيد',
+      name: 'اكتشف مجموعة ملابس العيد 2026 لطفلك قبل نفاذ الكمية ',
       subtitle: 'ملابس أطفال أنيقة - جودة عالية',
       price: 5900,
-      oldPrice: 6900,
-      discount: 22,
       images: [
         '/products/product1.png',
         '/products/product2.png',
@@ -53,10 +51,11 @@ function Storefront() {
         { name: 'زيتي', hex: '#313323' },
       ],
       features: [
-        'قماش عالي الجودة مريح للأطفال',
-        'تصميم أنيق يناسب جميع المناسبات',
-        'سهل الغسل والكي',
-        'ألوان ثابتة لا تبهت مع الغسل',
+        'جودة عالية',
+        'تصميم عصري ',
+        'راحة طوال اليوم لطفلك',
+        'اجعل العيد اكثر تميزا مع nr collection 2026',
+        'اطلب الان و دع طفلك يعيش فرحة العيد بأناقة'
       ],
     },
   ]
@@ -66,7 +65,7 @@ function Storefront() {
   const quantityOptions = [
     { qty: 1, label: 'قطعة واحدة', price: product.price },
     { qty: 2, label: 'قطعتين', price: product.price * 2 - 500 },
-    { qty: 3, label: 'ثلاث قطع', price: product.price * 3 - 1200 },
+
   ]
 
   const wilayas = [
@@ -160,8 +159,6 @@ function Storefront() {
 
             <div className="price-container">
               <span className="price-current">{formatPrice(product.price)}</span>
-              <span className="price-old">{formatPrice(product.oldPrice)}</span>
-              <span className="discount-badge">-{product.discount}%</span>
             </div>
 
             <div className="star-rating">
