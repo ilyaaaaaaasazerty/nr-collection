@@ -168,6 +168,19 @@ function Storefront() {
             </div>
           </div>
 
+          {/* Promo Video */}
+          <div className="product-video">
+            <video
+              src="/promo-video.mp4"
+              controls
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="promo-video"
+            />
+          </div>
+
           {/* Image Gallery */}
           <div className="image-gallery">
             <img
